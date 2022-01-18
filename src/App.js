@@ -15,8 +15,8 @@ import BrowseFilterGrid from './Pages/Browse_Jobs/BrowseFilterGrid';
 import BrowseFilterList from './Pages/Browse_Jobs/BrowseFilterList';
 import Navbar from './NavBar/NavBar';
 import Home from './HOME/Home';
-// import SignIn from './NavBar/SignIn';
-// import SignUp from './NavBar/SignUp';
+import SignIn from './NavBar/SignIn';
+import SignUp from './NavBar/SignUp';
 
 import MyProfile from './Students/MyProfile';
 import MyResume from './Students/MyResume';
@@ -43,19 +43,13 @@ export const App = () => {
     
    
    <BrowserRouter>
-   
-   <Navbar />
    <ScrollToTop />
-   
+   <div>
+   <Navbar />
    <Routes>
-
-
-   
-
-   <Route path="/" element={<Home />} />
-
-   {/* <Route exact path="/signin" element={<SignIn />} />
-   <Route exact path="/signup" element={<SignUp />} /> */}
+   <Route path="/" exact element={<Home />} />
+   <Route exact path="/signin" element={<SignIn />} />
+   <Route exact path="/signup" element={<SignUp />} />
    <Route exact path="/jobdetailes/:id" element={<Jobdetailes />} />
    <Route exact path="/myprofile" element={<MyProfile/>} />
    <Route exact path="/myresume" element={<MyResume />} />
@@ -65,7 +59,7 @@ export const App = () => {
   <Route exact path ="/changepassword" element={<ChangePassword />} />
   <Route exact path="/company_profile" element={<COMPANY_PROFILE />} />
   <Route exact path="/Manage_jobs" element={<Manage_Jobs />} />
-  <Route exact path="/Applications" element={<Applications />}/>
+  <Route exact path="/Applications/:id" element={<Applications />}/>
   <Route exact path="/post_jobs" element={<POST_A_JOB />} />
   <Route exact path="/companies" element={<Companies />} />
   <Route exact path="/browsefilterlist" element={<BrowseFilterList/>} />
@@ -80,7 +74,7 @@ export const App = () => {
   <Route exact path="/updatepost/:id" element={<Updatepost />} />
    </Routes>
    <Footer />
-
+   </div>
    </BrowserRouter>
 
 </div>

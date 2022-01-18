@@ -21,7 +21,7 @@ export const Manage_Jobs = () => {
         axios
             .get(address, {
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRlODA2NmI1YWZkNTM0Y2M0MjA0NmYiLCJpYXQiOjE2NDE5NzE4MTV9._bp8uxohv2vMI9s7ZtfaK6-uZ2p8_OE-inejSsS9mjc`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             })
             .then((response) => {
@@ -37,7 +37,7 @@ export const Manage_Jobs = () => {
         axios
           .delete(`${apiList.jobs}/${id}`, {
             headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRlODA2NmI1YWZkNTM0Y2M0MjA0NmYiLCJpYXQiOjE2NDE5NzE4MTV9._bp8uxohv2vMI9s7ZtfaK6-uZ2p8_OE-inejSsS9mjc`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           })
           .then((response) => {
@@ -107,7 +107,7 @@ export const Manage_Jobs = () => {
 
                                                             </td>
                                                             <td>
-                                                                <p className="appications"><Link to="/Applications">Applications</Link></p>
+                                                                <p className="appications"><Link to={`/Applications/${job._id}`}>Applications</Link></p>
                                                             </td>
                                                             <td>
                                                                 <p className="pending">Pending</p>

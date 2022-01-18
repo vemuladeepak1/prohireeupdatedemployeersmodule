@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
-
-import { getData } from "../action/action";
+// import { getData } from "../action/action";
 import { useDispatch, useSelector } from "react-redux";
-
+import apiList from "../lib/apiList";
+import axios from "axios";
 
 const MyProfile = (props) => {
   const dispatch = useDispatch();
   const [experience, setExperience] = useState(false);
-  const result = useSelector((state) => state);
 
   const [profile, setProfile] = useState({
-    YourName: "",
-    CurrentLocation: "",
-    MobileNumber: "",
-    Email: " ",
+    name: "",
+    currentlocation: "",
+    contactNumber: "",
+    email: " ",
     experience: {
       year: "",
       month: "",
@@ -35,11 +34,6 @@ const MyProfile = (props) => {
       },
     }));
   };
-  const ashok = (e) => {
-    // e.preventDefault();
-    console.log("working");
-    dispatch(getData(profile));
-  };
 
   const fresherHandling = (e) => {
     setProfile({ ...profile, experience: e.target.value });
@@ -54,6 +48,45 @@ const MyProfile = (props) => {
     setExperience(false);
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = () => {
+    axios
+      .get(apiList.user, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setProfile(response.data);
+        
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        
+      });
+  };
+
+ const updateData =()=>{
+   console.log(profile)
+  axios
+  .put(apiList.user, profile, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+  .then((response) => {
+ console.log(response.data)
+    getData();
+  })
+  .catch((err) => {
+  
+    console.log(err.response);
+  });
+ }
 
 
   return (
@@ -84,11 +117,11 @@ const MyProfile = (props) => {
                       <label>Your Name:</label>
                         <input
                           type="text"
-                          name="YourName"
-                          // value={profile.YourName}
+                          name="name"
+                          value={profile.name}
                           className="form_control"
                           placeholder="Enter Your Name"
-                          onChange={formHandling.bind(this)}
+                          onChange={(e)=>formHandling(e)}
                         />
                     </div>
                   </div>
@@ -99,11 +132,12 @@ const MyProfile = (props) => {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="experience"
                           id="inlineRadio1"
                           value="fresher"
+                          checked={profile.experience === "fresher"}
                           onClick={() => fresherButton()}
-                          onChange={(e) => fresherHandling(e)}
+                          onChange={(e)=>fresherHandling(e)}
                         />
                         <label className="form-check-label" for="inlineRadio1">
                           Fresher
@@ -113,9 +147,10 @@ const MyProfile = (props) => {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="experience"
                           id="inlineRadio2"
-                          value="Part Time"
+                          value="experienced"
+                          checked={profile.experience === "experienced"}
                           onClick={() => experienceButton()}
                         />
                         <label
@@ -187,10 +222,11 @@ const MyProfile = (props) => {
                     <div className="form-group">
                       <input
                         type="text"
-                        name="CurrentLocation"
+                        name="currentlocation"
+                        value={profile.currentlocation}
                         className="form_control mt-2"
                         placeholder="Enter Your City"
-                        onChange={formHandling.bind(this)}
+                        onChange={(e)=>formHandling(e)}
                       />
                     </div>
                   </div>
@@ -200,10 +236,11 @@ const MyProfile = (props) => {
                       <label>Mobile Number</label>
                       <input
                         type="text"
-                        name="MobileNumber"
+                        value={profile.contactNumber}
+                        name="contactNumber"
                         className="form_control"
                         placeholder="9876543210"
-                        onChange={formHandling.bind(this)}
+                        onChange={(e)=>formHandling(e)}
                       />
                     </div>
                   </div>
@@ -213,17 +250,18 @@ const MyProfile = (props) => {
                       <label>Email</label>
                       <input
                         type="email"
-                        name="Email"
+                        name="email"
+                        value={profile.email}
                         className="form_control"
                         placeholder="xyz@gmail.com"
-                        onChange={formHandling.bind(this)}
+                        onChange={(e)=>formHandling(e)}
                       />
                     </div>
                   </div>
                 </div>
               </form>
-              <button className="update" onClick={() => ashok()}>
-                Save
+              <button className="update" onClick={()=>updateData()} >
+                Update
               </button>
             </div>
           </div>

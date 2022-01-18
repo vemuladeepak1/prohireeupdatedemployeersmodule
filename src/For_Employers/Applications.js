@@ -1,7 +1,37 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom';
+import apiList from '../lib/apiList';
 
 export const Applications = () => {
+    const [applications, setApplications] = useState([]);
+    let { id } = useParams();
+
+
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = () => {
+    let address = `${apiList.applicants}?jobId=${id}`;
+    console.log(address);
+    axios
+      .get(address, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setApplications(response.data);
+      })
+      .catch((err) => {
+        console.log(err.response);
+        setApplications([]);
+        
+      });
+  };
     return (
         <div>
             

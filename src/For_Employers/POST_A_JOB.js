@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getPostJob } from '../action/action'
 import { useForm } from "react-hook-form";
 import axios from 'axios';
+import ChipInput from "material-ui-chip-input";
 import {TagsInput} from "react-tag-input-component"
 const POST_A_JOB = (props) => {
     const navigate = useNavigate();
@@ -28,16 +29,15 @@ const POST_A_JOB = (props) => {
         jobType: '',
         experience: '',
         country: '',
-        Location: '',
         deadline: '',
         education: '',
         description: '',
         salary: '',
+        skillsets:[],
+        cities:[]
 
     })
-            const [skillsets,setskillsets]= useState([])
-            const [cities,setcities]= useState([])
-console.log(props.history)
+
     //console.log(register)
     const formHandling = (e) => {
         setPost({ ...post, [e.target.name]: e.target.value })
@@ -45,14 +45,10 @@ console.log(props.history)
 
     const handleUpdate=(e)=>{
         e.preventDefault()
-        let updatedDetails = {
-            ...post,skillsets,cities
-          }
-        console.log(updatedDetails)
         axios
-      .post("http://localhost:4444/api/jobs", updatedDetails, {
+      .post("http://localhost:4444/api/jobs", post, {
         headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRlODA2NmI1YWZkNTM0Y2M0MjA0NmYiLCJpYXQiOjE2NDE5NzE4MTV9._bp8uxohv2vMI9s7ZtfaK6-uZ2p8_OE-inejSsS9mjc`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
       })
       .then((response) => {
@@ -106,7 +102,7 @@ console.log(props.history)
                                             <div className="form-group">
                                                 <label> Positions available</label>
                                                 <input type="number" name='maxPositions' required
-                                                    className="form_control "
+                                                    className="form_control"
 
                                                     placeholder="No. of positions available" onChange={(e=>formHandling(e))}
                                                 />
@@ -164,14 +160,27 @@ console.log(props.history)
                                         <div className=" col-lg-6 col-md-6">
                                         <div className="form-group">
                                                 <label>Skills</label>
-                                                <TagsInput
-                                                value={skillsets}
-                                                onChange={setskillsets}
-                                                name="Skills"
-                                                placeHolder="Enter required Skills"
-                                                className = "go309598777"
-                                                />
-                                                <em style={{fontSize:"12px"}}>Press enter to add skills</em>
+                                                <ChipInput
+                                                    label="Skills"
+                                                    variant="outlined"
+                                                    helperText="Press enter to add skills"
+                                                    value={post.skillsets}
+                                                    onAdd={(chip) =>
+                                                      setPost({
+                                                        ...post,
+                                                        skillsets: [...post.skillsets, chip],
+                                                      })
+                                                    }
+                                                    onDelete={(chip, index) => {
+                                                      let skillsets = post.skillsets;
+                                                      skillsets.splice(index, 1);
+                                                      setPost({
+                                                        ...post,
+                                                        skillsets: skillsets,
+                                                      });
+                                                    }}
+                                                    fullWidth
+                                                  />
                                                 </div>
                                         </div>
 
@@ -191,14 +200,28 @@ console.log(props.history)
                                         <div className=" col-lg-6 col-md-6">
                                         <div className="form-group">
                                                 <label>Locations</label>
-                                                <TagsInput
-                                                value={cities}
-                                                onChange={setcities}
-                                                name="Location"
-                                                placeHolder="Enter Job Locations"
-                                                className = "go309598777"
-                                                />
-                                                <em style={{fontSize:"12px"}}>Press enter to add locations</em>
+                                                <ChipInput
+                                                    // className={classes.inputBox}
+                                                    label="Locations"
+                                                    variant="outlined"
+                                                    helperText="Press enter to add cities"
+                                                    value={post.cities}
+                                                    onAdd={(chip) =>
+                                                      setPost({
+                                                        ...post,
+                                                        cities: [...post.cities, chip],
+                                                      })
+                                                    }
+                                                    onDelete={(chip, index) => {
+                                                      let cities = post.cities;
+                                                      cities.splice(index, 1);
+                                                      setPost({
+                                                        ...post,
+                                                        cities: cities,
+                                                      });
+                                                    }}
+                                                    fullWidth
+                                                  />
                                                 </div>
                                         </div>
 

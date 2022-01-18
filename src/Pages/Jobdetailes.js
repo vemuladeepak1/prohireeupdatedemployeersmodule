@@ -2,6 +2,8 @@ import React from 'react'
 import { Link,useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { userType } from '../lib/isAuth';
+import apiList from '../lib/apiList';
 export const Jobdetailes = (props) => {
     const [jobs, setJobs] = useState([]);
     let { id } = useParams();
@@ -14,7 +16,7 @@ export const Jobdetailes = (props) => {
         axios
             .get(`http://localhost:4444/api/jobs/${id}`, {
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRkNjI5ODE2ZmE1NDk0M2E3MGE1ZGEiLCJpYXQiOjE2NDE4OTg2NDh9.ahH6w4oskBdDBgfOVTaKk5-pinavHGZzXVxON0QvqWg`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             })
             .then((response) => {
@@ -25,6 +27,29 @@ export const Jobdetailes = (props) => {
             });
     };
     
+    const handleApply = () => {
+        console.log(jobs._id);
+        axios
+          .post(
+            `${apiList.jobs}/${jobs._id}/applications`,{
+                sop:"ksajdfk"
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+              }
+            }
+          )
+          .then((response) => {
+           console.log(response)
+          })
+          .catch((err) => {
+            console.log(err.response);
+            
+          });
+      };
+
+
     return (
      <div>
      <div className="job_detail_wrapper">
@@ -89,7 +114,7 @@ export const Jobdetailes = (props) => {
                                         <button className="home_job_btn mx-1">Node JS</button> */}
                                         <div className="float-right job_details_save">
                                             <a href="#" type="btn" className="job_details_savebtn mx-2"  >Save</a>
-                                            <a href="#" type="btn" className="job_details_applybtn">Apply</a>
+                                            <a href="#" type="btn" className="job_details_applybtn" disabled={userType() === "recruiter"} onClick={()=>handleApply()}>Apply</a>
                                         </div>
                                     </div>
                                 </div>

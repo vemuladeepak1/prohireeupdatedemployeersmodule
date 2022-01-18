@@ -4800,9 +4800,9 @@ input#filter_grid_input:focus {
 .sliders {
   padding-right: 2px;
 }
-.collapse.show {
+/* .collapse.show {
   margin-top: 77px !important;
-}
+} */
 
 .acc_sidebar_filter_para {
   font-family: Rubik, sans-serif;

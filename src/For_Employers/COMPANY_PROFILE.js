@@ -76,7 +76,7 @@ export const COMPANY_PROFILE = () => {
     axios
       .get("http://localhost:4444/api/user", {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRlYTVkYjhjNmIwZmZhNjM0NjQ2YjQiLCJpYXQiOjE2NDE5ODE0MDR9.0VD-8LDqCWE2YajyGFVMwGPyiZllZV8jILNkfKG18xY`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {
@@ -93,7 +93,7 @@ export const COMPANY_PROFILE = () => {
     axios
       .put("http://localhost:4444/api/user", company, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRlYTVkYjhjNmIwZmZhNjM0NjQ2YjQiLCJpYXQiOjE2NDE5ODE0MDR9.0VD-8LDqCWE2YajyGFVMwGPyiZllZV8jILNkfKG18xY`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {

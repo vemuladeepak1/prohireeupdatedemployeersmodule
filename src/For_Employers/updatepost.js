@@ -8,6 +8,7 @@ import { TagsInput } from "react-tag-input-component";
 import axios from "axios";
 import moment from "moment";
 import { useEffect } from "react";
+import ChipInput from "material-ui-chip-input";
 const Updatepost= () => {
   const {
     register,
@@ -24,27 +25,36 @@ const Updatepost= () => {
     jobType: '',
     experience: '',
     country: '',
-    Location: '',
     deadline: '',
     education: '',
     description: '',
     salary: '',
+    skillsets:[],
+    cities:[]
 
 })
-    const [skillsets,setskillsets]= useState(["ksdjfkljaskld"])
-    console.log(typeof(skillsets))
-    const [cities,setcities]= useState([])
+    // const [skillsets,setskillsets]= useState([])
+    // const [cities,setcities]= useState([])
   //console.log(register)
   const formHandling = (e) => {
     setPost({ ...post, [e.target.name]: e.target.value });
   };
-
+console.log(post.skillsets)
   const handleUpdate = () => {
-    alert("hey!");
-    // dispatch(getPostJob(post));
-    //reset();
 
-    //console.log(data)
+    axios
+      .put(`http://localhost:4444/api/jobs/${id}`, post, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      })
+      .then((response) => {
+        console.log(response)
+        getData();
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
   };
   useEffect(() => {
     getData();
@@ -53,24 +63,23 @@ const getData = () => {
     axios
         .get(`http://localhost:4444/api/jobs/${id}`, {
             headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWRkNjI5ODE2ZmE1NDk0M2E3MGE1ZGEiLCJpYXQiOjE2NDE4OTg2NDh9.ahH6w4oskBdDBgfOVTaKk5-pinavHGZzXVxON0QvqWg`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         })
         .then((response) => {
 
-          const { skillsets,cities, ...updatedDetails } = response.data;
+          // const { skillsets,cities, ...updatedDetails } = response.data;
           console.log(response.data)
-            setPost(updatedDetails)
+            setPost(response.data)
             
-            setskillsets(response.data.skillsets)
-            setcities(response.data.cities)
+            // setskillsets(response.data.skillsets)
+            // setcities(response.data.cities)
         })
         .catch((err) => {
             console.log(err.response.data);
         });
 };
 
-  const [selected, setSelected] = useState([]);
 
   return (
     <div>
@@ -168,14 +177,28 @@ const getData = () => {
                                         <div className=" col-lg-6 col-md-6">
                                         <div className="form-group">
                                                 <label>Skills</label>
-                                                <TagsInput
-                                                value={skillsets}
-                                                onChange={setskillsets}
-                                                name="Skills"
-                                                placeHolder="Enter required Skills"
-                                                className = "go309598777"
-                                                />
-                                                <em style={{fontSize:"12px"}}>Press enter to add skills</em>
+                                                <ChipInput
+                                                    // className={classes.inputBox}
+                                                    label="Skills"
+                                                    variant="outlined"
+                                                    helperText="Press enter to add skills"
+                                                    value={post.skillsets}
+                                                    onAdd={(chip) =>
+                                                      setPost({
+                                                        ...post,
+                                                        skillsets: [...post.skillsets, chip],
+                                                      })
+                                                    }
+                                                    onDelete={(chip, index) => {
+                                                      let skillsets = post.skillsets;
+                                                      skillsets.splice(index, 1);
+                                                      setPost({
+                                                        ...post,
+                                                        skillsets: skillsets,
+                                                      });
+                                                    }}
+                                                    fullWidth
+                                                  />
                                                 </div>
                                         </div>
 
@@ -195,14 +218,28 @@ const getData = () => {
                                         <div className=" col-lg-6 col-md-6">
                                         <div className="form-group">
                                                 <label>Locations</label>
-                                                <TagsInput
-                                                value={cities}
-                                                onChange={setcities}
-                                                name="Location"
-                                                placeHolder="Enter Job Locations"
-                                                className = "go309598777"
-                                                />
-                                                <em style={{fontSize:"12px"}}>Press enter to add locations</em>
+                                                <ChipInput
+                                                    // className={classes.inputBox}
+                                                    label="Locations"
+                                                    variant="outlined"
+                                                    helperText="Press enter to add cities"
+                                                    value={post.cities}
+                                                    onAdd={(chip) =>
+                                                      setPost({
+                                                        ...post,
+                                                        cities: [...post.cities, chip],
+                                                      })
+                                                    }
+                                                    onDelete={(chip, index) => {
+                                                      let cities = post.cities;
+                                                      cities.splice(index, 1);
+                                                      setPost({
+                                                        ...post,
+                                                        cities: cities,
+                                                      });
+                                                    }}
+                                                    fullWidth
+                                                  />
                                                 </div>
                                         </div>
 
@@ -240,7 +277,7 @@ const getData = () => {
 
                                     </div>
                                 </form>
-                                <button className="update_pj" onClick={(e)=>handleUpdate(e)} >Post a Job</button>
+                                <button className="update_pj" onClick={(e)=>handleUpdate(e)} >Update a Job</button>
               </div>
             </div>
           </div>

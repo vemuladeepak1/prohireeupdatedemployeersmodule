@@ -1,6 +1,27 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import apiList from '../../lib/apiList';
  const BrowseFilterList = () => {
+const [jobs,setJobs]=useState([])
+
+useEffect(async()=>{
+   await axios.get(apiList.jobs, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setJobs(response.data)
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+      
+    
+},[])
+
     return (
         <div>
           
@@ -424,194 +445,47 @@ import { Link } from 'react-router-dom';
 
 
                 <div className="col-lg-9">
-                    <ul className="filter_list_job_post">
-                        <li>
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
+                {
+                        jobs?.map((job)=>{
+                            return(
+                                <ul className="filter_list_job_post">
+                            <li>
+                                <div className="filter_list_job_box">
+                                    <div className="d-flex mb-4">
+                                        <div className="filter_list_job_company">
+                                            <span><img alt="" src="" /></span>
+                                        </div>
+                                        <div className="filter_list_job_info">
+                                            <h4><Link to={`/jobdetailes/${job._id}`}>{job.title}</Link></h4>
+                                            <ul>
+                                                <li><i className="fas fa-map-marker-alt"></i>Hyderabad</li>
+                                                <li><i className="far fa-bookmark"></i>{job.jobType}</li>
+                                                <li><i className="far fa-clock"></i>Published 1 hour ago</li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">Full-Stack Developer</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Hyderabad</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 1 hour ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 20000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            30000</span>
-                                    </div>
-                                </div>
-                                <label className="filter_list_wishlist">
-                                    <input type="checkbox" /><span className="filter_list_added"><i
-                                            className="fas fa-heart"></i></span>
-                                </label>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
-                                    </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">DevOps Engineer</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Chennai</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 10 hours ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 30000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            40000</span>
-                                    </div>
-                                    <label className="filter_list_wishlist">
-                                        <input type="checkbox" /><span className="filter_list_added"><i className="far
-                                            s fa-heart"></i></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
-                                    </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">Team Leader</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Bangalore</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 15 days ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 35000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            45000</span>
+                                    <div className="d-flex">
+                                        <div className="filter_list_job_type mr-auto">
+                                            <a href="#"><span>Full Time</span></a>
+                                        </div>
+                                        <div className="filter_list_salary">
+                                            <span><i className="fas fa-rupee-sign"></i> {job.salary} - <i
+                                                    className="fas fa-rupee-sign"></i>
+                                                30000</span>
+                                        </div>
                                     </div>
                                     <label className="filter_list_wishlist">
                                         <input type="checkbox" /><span className="filter_list_added"><i
-                                                className="far fa-heart"></i></span>
+                                                className="fas fa-heart"></i></span>
                                     </label>
                                 </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
-                                    </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">Programmer Analyst</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Noida</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 1 month ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 35000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            40000</span>
-                                    </div>
-                                    <label className="filter_list_wishlist">
-                                        <input type="checkbox" /><span className="filter_list_added"><i
-                                                className="far fa-heart"></i></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
-                                    </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">Senior Process Executive-Data</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Kolkata</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 20 days ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 40000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            50000</span>
-                                    </div>
-                                    <label className="filter_list_wishlist">
-                                        <input type="checkbox" /><span className="filter_list_added"><i
-                                                className="far fa-heart"></i></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div className="filter_list_job_box">
-                                <div className="d-flex mb-4">
-                                    <div className="filter_list_job_company">
-                                        <span><img alt="" src="" /></span>
-                                    </div>
-                                    <div className="filter_list_job_info">
-                                        <h4><a href="#">Data Networking Engineer</a></h4>
-                                        <ul>
-                                            <li><i className="fas fa-map-marker-alt"></i>Delhi</li>
-                                            <li><i className="far fa-bookmark"></i>Full Time</li>
-                                            <li><i className="far fa-clock"></i>Published 20 days ago</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="filter_list_job_type mr-auto">
-                                        <a href="#"><span>Full Time</span></a>
-                                    </div>
-                                    <div className="filter_list_salary">
-                                        <span><i className="fas fa-rupee-sign"></i> 50000 - <i
-                                                className="fas fa-rupee-sign"></i>
-                                            60000</span>
-                                    </div>
-                                    <label className="filter_list_wishlist">
-                                        <input type="checkbox" /><span className="filter_list_added"><i
-                                                className="far fa-heart"></i></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-
-                    </ul>
+                            </li>
+                        </ul>
+                            )
+                        })
+                    }
+                                
+                   
                 </div>
 
             </div>

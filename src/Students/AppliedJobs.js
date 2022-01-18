@@ -1,7 +1,35 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import apiList from '../lib/apiList';
 import Sidebar from './Sidebar'
  const AppliedJobs = () => {
+    const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = () => {
+    axios
+      .get(apiList.applications, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setApplications(response.data);
+      })
+      .catch((err) => {
+        // history.push("/login")
+        // console.log(err.response);
+        console.log(err.response.data);
+      });
+  };
+
+
+
     return (
         <div className="container main_content my-5">
         <div className="row">
@@ -23,86 +51,37 @@ import Sidebar from './Sidebar'
                                 </select>
                             </a>
                         </div>
-                        <div className="box">
+                        {applications.length > 0 ? (
+                            applications.map((application) => (
+                                <div className="box">
                             <h5 className="heading_box">
-                                Software Developer
+                                {application.job.title}
                             </h5>
-                            <p className="designer"><span>UI/UX Designer</span> At Attract
-                                Solutions </p>
-                            <div className="box_location_main">
-                                <p className="box_location_sub"><i className="fas fa-map-marker-alt marker_icon"></i>
-                                    Banglore,India
-                                </p>
-                                <p className="box_money"><i className="far fa-money-bill-alt"></i> 3000</p>
-                            </div>
-                            <button className="php">PHP</button>
-                            <button className="angular">ANGULAR</button>
-                            <button className="js">JS</button>
-                            <div className="posted">
-                                <p className="posted_content">Posted : <span className="posted_content_sub">2 Days ago</span>
-                                    <button className="apply float-right">Apply job</button></p>
-                            </div>
-                        </div>
-                        <div className="box">
-                            <h5 className="heading_box">
-                                Software Developer
-                            </h5>
-                            <p className="designer"><span>UI/UX Designer</span> At Attract
-                                Solutions </p>
-                            <div className="box_location_main">
-                                <p className="box_location_sub"><i className="fas fa-map-marker-alt marker_icon"></i>
-                                    Banglore,India
-                                </p>
-                                <p className="box_money"><i className="far fa-money-bill-alt"></i> 3000</p>
-                            </div>
-                            <button className="php">PHP</button>
-                            <button className="angular">ANGULAR</button>
-                            <button className="js">JS</button>
-                            <div className="posted">
-                                <p className="posted_content">Posted : <span className="posted_content_sub">2 Days ago</span>
-                                    <button className="apply float-right">Apply job</button></p>
-                            </div>
-                        </div>
-                        <div className="box">
-                            <h5 className="heading_box">
-                                Software Developer
-                            </h5>
-                            <p className="designer"><span>UI/UX Designer</span> At Attract
-                                Solutions </p>
-                            <div className="box_location_main">
-                                <p className="box_location_sub"><i className="fas fa-map-marker-alt marker_icon"></i>
-                                    Banglore,India
-                                </p>
-                                <p className="box_money"><i className="far fa-money-bill-alt"></i> 3000</p>
-                            </div>
-                            <button className="php">PHP</button>
-                            <button className="angular">ANGULAR</button>
-                            <button className="js">JS</button>
-                            <div className="posted">
-                                <p className="posted_content">Posted : <span className="posted_content_sub">2 Days ago</span>
-                                    <button className="apply float-right">Apply job</button></p>
-                            </div>
-                        </div>
-                        <div className="box">
-                            <h5 className="heading_box">
-                                Software Developer
-                            </h5>
-                            <p className="designer"><span>UI/UX Designer</span> At Attract
-                                Solutions </p>
+                            {/* <p className="designer"><span>UI/UX Designer</span> At Attract
+                                Solutions </p> */}
                             <div className="box_location_main"> 
                                 <p className="box_location_sub"><i className="fas fa-map-marker-alt marker_icon"></i>
-                                    Banglore,India
+                                    {application.job.cities}
                                 </p>
-                                <p className="box_money"><i className="far fa-money-bill-alt"></i> 3000</p>
+                                <p className="box_money"><i className="far fa-money-bill-alt"></i> {application.job.salary}</p>
                             </div>
-                            <button className="php">PHP</button>
-                            <button className="angular">ANGULAR</button>
-                            <button className="js">JS</button>
+                            {
+                                            application?.job?.skillsets?.map(val=>{
+                                                return(<button className="php">{val}</button>)
+                                            })
+                                        }
                             <div className="posted">
                                 <p className="posted_content">Posted : <span className="posted_content_sub">2 Days ago</span>
-                                    <button className="apply float-right">Apply job</button></p>
+                                    <button className="apply float-right">{application.status}</button></p>
                             </div>
                         </div>
+                            ))
+                            ) : (
+                            <h1 variant="h5" style={{ textAlign: "center" }}>
+                                No Applications Found
+                            </h1>
+                            )}
+                        
                         <nav aria-label="...">
                             <ul className="pagination">
                                 <li className="page-item disabled">

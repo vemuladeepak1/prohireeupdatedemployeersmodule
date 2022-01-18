@@ -1,79 +1,130 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useState } from 'react'
+import  { Navigate } from 'react-router-dom'
+import apiList from '../lib/apiList';
+import isAuth, { userType } from '../lib/isAuth';
 const SignUp = () => {
-    return (
-        <section className="popup1">
-        <div className="modal" id="SignUp" tabindex="-1" role="dialog" aria-hidden="true">
-            <div className="modal-dialog ">
-                <div className="modal-content modal-content1">
-                    <div className="modal-header modal-header1">
-                        <button className="close close1" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" >&times;</span>
-                        </button>
-                    </div>
-                    <div className="modal-body modal-body1">
-                        <div className="row">
-                            <div className="col-lg-6 col-md-6" id="modal1">
-                                <h1 className="m11">Sign Up</h1>
-                                <p className="m12">Create your account using e-mail address and password.</p>
-                                
-                                <div className="signup_bottom_content text-center pt-5">
-                                    <div className="bottom_content_header pb-2">
-                                        <h5>Already have an Account...</h5>
-                                    </div>
-                                    <div className="bottom_content">
-                                        <p>LogIn Here.......</p>
-                                    </div>
-                                    <div className="login pt-2">
-                                        <button className="btn" onclick="myFunction1()"> LogIn</button>
-                                    </div>
-                                </div>
-                                <div className="social-container1">
-                                    <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-                                    <a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-                                    <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
-                                </div>
-                            </div>
-                            <div className="col-lg-6 col-md-6" id="modal2">
-                                <div className="modal-header modal-header1">
-                                    <h5 className="modal-title" id="ModalLabel">Create Account</h5>
-                                </div>
-                                <form>
-                                    <div className="modal-body  modal-body1">
-                                        <div className="form-group">
-                                            <label for="Name">Name</label>
-                                            <input type="text" className="form-control" id="name1"
-                                                aria-describedby="emailHelp" placeholder="Enter your Name" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="Name">Mobile Number</label>
-                                            <input type="text" className="form-control" id="name1"
-                                                aria-describedby="emailHelp" placeholder="Enter your Name" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="email1">Email address</label>
-                                            <input type="email" className="form-control" id="email1"
-                                                aria-describedby="emailHelp" placeholder="Enter email" />
-                                            <small id="emailHelp" className="form-text text-muted">Your information is safe
-                                                with us.</small>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="password1">Password</label>
-                                            <input type="password" className="form-control" id="password1"
-                                                placeholder="Password" />
-                                        </div>
-                                       
-                                        <div className="modal-footer border-top-0 d-flex justify-content-center">
-                                            <button type="submit" className="btn btn-primary signup_submit">Submit</button>
-                                        </div>
-                                        </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    )
+    const [loggedin, setLoggedin] = useState(isAuth());
+    const [signupDetails, setSignupDetails] = useState({
+        type: "applicant",
+        email: "",
+        password: "",
+        name: "",
+        contactNumber: ""
+      });
+      const handleInput = (e) => {
+        setSignupDetails({
+          ...signupDetails,
+          [e.target.name]: e.target.value,
+        });
+      };
+
+
+    const handleLoginRecruiter = () => {
+        console.log(signupDetails)
+        axios
+        .post(apiList.signup,signupDetails)
+        .then((response) => {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("type", response.data.type);
+          setLoggedin(isAuth());
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    }
+
+    const handleLogin = ()=>{
+      console.log(signupDetails)
+        axios
+        .post(apiList.signup,signupDetails)
+        .then((response) => {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("type", response.data.type);
+          setLoggedin(isAuth());
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    }
+
+
+
+
+    return(<>
+
+      {
+      isAuth() ? (
+      userType() === 'recruiter'?
+      <Navigate to="/company_profile" />
+        : 
+       <Navigate to="/myprofile" /> )
+       :
+      
+      <div className='mt-5 pt-5'>
+      <div class="container content mt-3 ">
+     <div class="row">
+       <div class="card card-login mx-auto mt-5 col-md-8 col-lg-6">
+         <div class="card-header">Signup</div>
+         <div class="card-body">
+           <form>
+           <select class="form-control" name="type" onChange={(e)=>handleInput(e)}>
+              <option value="applicant" selected>Applicant</option>
+              <option value="recruiter">Recruiter</option>
+              </select>  
+              <div class="form-group">
+               <div class="form-label-group">
+                 <label >Name :</label>
+                 <input type="text"  class="form-control" placeholder="Enter Name" required="required" autofocus="autofocus" name="name" onChange={(e)=>handleInput(e)}/>
+               </div>
+             </div>
+             <div class="form-group">
+               <div class="form-label-group">
+                 <label >Phone :</label>
+                 <input type="text"  class="form-control" placeholder="Enter Phone" required="required" autofocus="autofocus" name='contactNumber' onChange={(e)=>handleInput(e)}/>
+               </div>
+             </div>
+             <div class="form-group">
+               <div class="form-label-group">
+                 <label >Email :</label>
+                 <input type="email"  class="form-control" placeholder="Email address" required="required" autofocus="autofocus" name='email' onChange={(e)=>handleInput(e)}/>
+               </div>
+             </div>
+             <div class="form-group">
+               <div class="form-label-group">
+                 <label >Password :</label>
+                 <input type="password"  class="form-control" placeholder="Password" required="required" name='password' onChange={(e)=>handleInput(e)}/>
+               </div>
+             </div>
+             <div class="form-group">
+               <div class="checkbox">
+                 <label>
+                     <input type="checkbox" value="remember-me" />
+                     Remember Password
+                   </label>
+               </div>
+             </div>
+             <a class="btn btn-primary btn-block"  
+             onClick={() => {
+            signupDetails.type === "applicant"
+              ? handleLogin()
+              : handleLoginRecruiter();
+          }}>Login</a>
+           </form>
+           <div class="text-center">
+             <a class="d-block medium" href="forgot-password.html">Forgot Password?</a>
+           </div>
+         </div>
+       </div>
+     </div>
+     </div>
+     </div>
+      
+      }
+       
+    
+    </>)
 }
 export default SignUp
